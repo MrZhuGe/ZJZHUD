@@ -118,13 +118,14 @@
     [hud addSubview:promptView];
 }
 
-// MARK: Dismiss
 + (void)dismiss
 {
-    ZJZHUD *hud = [self instance];
-    if (hud.type == ZJZHUDTypeLoading) {
-        [hud.loadingView dismissLoadingView];
-    }
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(KZJZHUDSHOWANIMATIONTIME * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        ZJZHUD *hud = [self instance];
+        if (hud.type == ZJZHUDTypeLoading) {
+            [hud.loadingView dismissLoadingView];
+        }
+    });
 }
 
 + (void)dismiss:(void(^)(void))completion
@@ -133,7 +134,11 @@
     
     CGFloat time;
     if (hud.type == ZJZHUDTypeLoading) {
-        [hud.loadingView dismissLoadingView];
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(KZJZHUDSHOWANIMATIONTIME * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [hud.loadingView dismissLoadingView];
+        });
+        
         time = KZJZHUDSHOWANIMATIONTIME + KZJZHUDHIDEANIMATIONTIME;
     } else {
         time = KZJZHUDSHOWANIMATIONTIME + KZJZHUDHIDEANIMATIONTIME + KZJZHUDANIMATIONTIMER;
